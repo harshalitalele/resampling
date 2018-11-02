@@ -16,18 +16,31 @@ def resampleImage(imagePath, newDownImageName, newUpImageName):
     newupimage = upimg.load()
     upIndex = 0
     upmaxWd = upsize
-    for i in range(0, width-1):
-        for j in range(0, height-1):
-            if(i%2 or j%2):
-                newupimage[upIndex // upmaxWd, upIndex % upmaxWd] = (rgb[0], rgb[1], rgb[2])
-                upIndex = upIndex + 1
-                continue
+    for i in range(0, width):
+        for j in range(0, height):
             xy = (i, j)
             rgb = rgbimage.getpixel(xy)
+            if(i%2==0 or j%2==0):
+                newupimage[upIndex // upmaxWd, upIndex % upmaxWd] = (rgb[0], rgb[1], rgb[2])
+                upIndex = upIndex + 1
+                continue            
             newdownimage[i//2, j//2] = (rgb[0], rgb[1], rgb[2])
-    newDownImagePath = "E:/Studies/POCs/Python/basic 01/" + newDownImageName + ".jpg"
-    newUpImageName = "E:/Studies/POCs/Python/basic 01/" + newUpImageName + ".jpg"
+    newDownImagePath = "E:/Studies/POCs/resampling/" + newDownImageName + ".jpg"
+    newUpImageName = "E:/Studies/POCs/resampling/" + newUpImageName + ".jpg"
     downimg.save(newDownImagePath)
     upimg.save(newUpImageName)
 
+def createSampleImg():
+    newimg = Image.new('RGBA', (500,500), color = (0,0,0,255))
+    newimgArr = newimg.load()
+    for i in range(0, 500):
+        for j in range(0, 500):
+            if(i%2==0 or j%2==0):
+                newimgArr[i,j] = (0,255,0,255)
+                continue
+            newimgArr[i,j] = (255,0,0,255)
+    newImagePath = "E:/Studies/POCs/resampling/createdImg.png"
+    newimg.save(newImagePath)
+
+#createSampleImg()
 resampleImage("E:/Studies/POCs/resampling/flowers.png", "downFlow", "upFlow")
