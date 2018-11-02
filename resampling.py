@@ -42,5 +42,33 @@ def createSampleImg():
     newImagePath = "E:/Studies/POCs/resampling/createdImg.png"
     newimg.save(newImagePath)
 
+def superImpose():
+    downImage = Image.open("E:/Studies/POCs/resampling/downFlow.png", 'r')
+    dwd, dht = downImage.size
+    dimgArr = downImage.convert('RGB')
+    upImage = Image.open("E:/Studies/POCs/resampling/upFlow.png", 'r')
+    uimgArr = upImage.convert('RGB')
+    uwd, uht = upImage.size
+    newimg = Image.new('RGB', (dwd*2, dht*2), color = (0,0,0))
+    newimgArr = newimg.load()
+    upointer = 0
+    dpointer = 0
+    for i in range(0, dht*2):
+        for j in range(0, dwd*2):
+            if(i%2==0 or j%2==0):
+                xy = (upointer//uwd, upointer%uht)
+                upx = uimgArr.getpixel(xy)
+                newimgArr[i,j] = (upx[0],upx[1],upx[2])
+                upointer = upointer + 1
+                continue
+            xy = (i//2, j//2)
+            dpx = dimgArr.getpixel(xy)
+            newimgArr[i,j] = (dpx[0],dpx[1],dpx[2])
+            
+    newImagePath = "E:/Studies/POCs/resampling/superImposed.jpg"
+    newimg.save(newImagePath)
+    
+
 #createSampleImg()
-resampleImage("E:/Studies/POCs/resampling/flowers.png", "downFlow", "upFlow")
+#resampleImage("E:/Studies/POCs/resampling/flowers.png", "downFlow", "upFlow")
+superImpose()
