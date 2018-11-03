@@ -21,7 +21,7 @@ def resampleImage(imagePath, newDownImageName, newUpImageName):
             xy = (i, j)
             rgb = rgbimage.getpixel(xy)
             if(i%2==0 or j%2==0):
-                newupimage[upIndex // upmaxWd, upIndex % upmaxWd] = (rgb[0], rgb[1], rgb[2])
+                newupimage[upIndex % upmaxWd, upIndex//upmaxWd] = (rgb[0], rgb[1], rgb[2])
                 upIndex = upIndex + 1
                 continue            
             newdownimage[i//2, j//2] = (rgb[0], rgb[1], rgb[2])
@@ -43,32 +43,36 @@ def createSampleImg():
     newimg.save(newImagePath)
 
 def superImpose():
-    downImage = Image.open("E:/Studies/POCs/resampling/downFlow.png", 'r')
+    downImage = Image.open("E:/Studies/POCs/resampling/downFlow.jpg", 'r')
     dwd, dht = downImage.size
     dimgArr = downImage.convert('RGB')
-    upImage = Image.open("E:/Studies/POCs/resampling/upFlow.png", 'r')
+    upImage = Image.open("E:/Studies/POCs/resampling/upFlow.jpg", 'r')
     uimgArr = upImage.convert('RGB')
     uwd, uht = upImage.size
     newimg = Image.new('RGB', (dwd*2, dht*2), color = (0,0,0))
+    nwd, nht = newimg.size
+    print("new width ", nwd)
+    print("new height ", nht)
     newimgArr = newimg.load()
     upointer = 0
     dpointer = 0
-    for i in range(0, dht*2):
-        for j in range(0, dwd*2):
+    for i in range(0, dwd*2):
+        for j in range(0, dht*2):
             if(i%2==0 or j%2==0):
-                xy = (upointer//uwd, upointer%uht)
+                xy = (upointer%uwd, upointer//uwd)
                 upx = uimgArr.getpixel(xy)
-                newimgArr[i,j] = (upx[0],upx[1],upx[2])
+                #print("i ", i)
+                #print("j ", j)
+                newimgArr[i, j] = (upx[0],upx[1],upx[2])
                 upointer = upointer + 1
                 continue
             xy = (i//2, j//2)
             dpx = dimgArr.getpixel(xy)
-            newimgArr[i,j] = (dpx[0],dpx[1],dpx[2])
+            newimgArr[i, j] = (dpx[0],dpx[1],dpx[2])
             
     newImagePath = "E:/Studies/POCs/resampling/superImposed.jpg"
     newimg.save(newImagePath)
     
-
 #createSampleImg()
 #resampleImage("E:/Studies/POCs/resampling/flowers.png", "downFlow", "upFlow")
 superImpose()
