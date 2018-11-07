@@ -49,7 +49,7 @@ def getUpimgsize(wd, ht):
     upWd = 0
     upHt = 0
     downsize = round((wd+0.8)/2)*round((ht+0.8)/2)
-    upsize = wd*ht - downsize
+    upsize = 3*downsize
     upWd = upHt = upsize**(1/2)
     while(upWd != 0 and upHt != 0 and not(upWd == int(upWd) and upHt == int(upHt))):
         upWd = int(upWd - 1)
@@ -114,11 +114,11 @@ def superImpose():
     nwd, nht = newimg.size
     newimgArr = newimg.load()
     upointer = 0
-    dpointer = 0
-    for i in range(0, dwd*2):
-        for j in range(0, dht*2):
-            if(i%2==0 or j%2==0):
+    for j in range(0, dht*2):
+        for i in range(0, dwd*2):
+            if(not(i%2==0 and j%2==0)):
                 xy = (upointer%uwd, upointer//uwd)
+                #print("xy: ", xy)
                 upx = uimgArr.getpixel(xy)
                 newimgArr[i, j] = (upx[0],upx[1],upx[2])
                 upointer = upointer + 1
@@ -130,8 +130,8 @@ def superImpose():
     newimg.save(newImagePath)
     
 #createSampleImg()
-resampleImage("E:/Studies/POCs/resampling/test.png", "downFlow", "upFlow")
-#superImpose()
+#resampleImage("E:/Studies/POCs/resampling/flowers.png", "downFlow", "upFlow")
+superImpose()
 #downsampleImage("E:/Studies/POCs/resampling/test.png")
 
 #testImageArrays()
